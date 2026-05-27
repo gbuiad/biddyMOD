@@ -17,11 +17,13 @@ export type AggregatedReports = {
 export type QueueItem = {
   contentId: string;
   contentType: ContentType;
+  contentPreview: string;
   score: number;
   summary: string;
   topReason: string;
   reportCount: number;
   autoRemoved: boolean;
+  escalated?: boolean;
   queuedAt: string;
 };
 

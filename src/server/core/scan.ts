@@ -41,7 +41,8 @@ export const scanContent = async (
     scored.score,
     scored.summary,
     scored.topReason,
-    reports.count
+    reports.count,
+    getContentPreview(text)
   );
 
   return {
@@ -53,4 +54,9 @@ export const scanContent = async (
     topReason: scored.topReason,
     reportCount: reports.count,
   };
+};
+
+const getContentPreview = (text: string): string => {
+  const preview = text.replace(/\s+/g, ' ').trim();
+  return preview.length > 180 ? `${preview.slice(0, 177)}...` : preview;
 };

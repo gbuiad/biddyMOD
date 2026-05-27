@@ -117,3 +117,31 @@ export const removeFromQueue = async (
         }
     }
 }
+
+export const updateQueueItem = async (
+  subredditId: string,
+  contentId: string,
+  update: (item: QueueItem) => QueueItem
+): Promise<QueueItem | null> => {
+    const key = KEYS.queue(subredditId);
+    const all = await redis.zRange(key, 0, -1);
+    for (const raw of all) {
+        try {
+            const member = typeof raw === 'string' ? raw : raw.member;
+            const item = JSON.parse(member) as QueueItem;
+            if (item.contentId === contentId) {
+                const updatedItem = update(item);
+                await redis.zRem(key, [member]);
+                await redis.zAdd(key, {
+                    member: JSON.stringify(updatedItem),
+                    score: updatedItem.score,
+                });
+                await redis.expire(key, 60 * 60 * 24 * 30);
+                return updatedItem;
+            }
+        } catch {
+            // skip forward
+        }
+    }
+    return null;
+}

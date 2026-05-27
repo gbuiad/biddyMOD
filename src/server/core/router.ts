@@ -7,9 +7,9 @@ import type { QueueItem } from '../../shared/biddymod';
 // Tune these based on your subreddit's tolerance.
 
 const THRESHOLDS = {
-  DISMISS_BELOW: 40,   // score < 40  → quietly dismiss
-  REMOVE_ABOVE: 75,    // score >= 75 → auto-remove + alert mods
-  // 40–74 → push to mod queue for human review
+  DISMISS_BELOW: 55,   // score < 55  → quietly dismiss
+  REMOVE_ABOVE: 85,    // score >= 85 → auto-remove + alert mods
+  // 55–84 → push to mod queue for human review
 } as const;
 
 export type RoutingAction = 'dismiss' | 'escalate' | 'remove';
@@ -31,7 +31,8 @@ export const routeContent = async (
   score: number,
   summary: string,
   topReason: string,
-  reportCount: number
+  reportCount: number,
+  contentPreview: string
 ): Promise<RoutingResult> => {
   const label = describeContent(contentId, contentType);
 
@@ -55,7 +56,7 @@ export const routeContent = async (
     }
 
     await pushToQueue(subredditId, buildQueueItem({
-      contentId, contentType, score, summary, topReason, reportCount,
+      contentId, contentType, contentPreview, score, summary, topReason, reportCount,
       autoRemoved: true,
     }));
 
@@ -64,7 +65,7 @@ export const routeContent = async (
 
   // ── Medium severity: push to mod queue for human review ───────────────────
   await pushToQueue(subredditId, buildQueueItem({
-    contentId, contentType, score, summary, topReason, reportCount,
+    contentId, contentType, contentPreview, score, summary, topReason, reportCount,
     autoRemoved: false,
   }));
 
@@ -77,6 +78,7 @@ export const routeContent = async (
 const buildQueueItem = (args: {
   contentId: string;
   contentType: 'post' | 'comment';
+  contentPreview: string;
   score: number;
   summary: string;
   topReason: string;

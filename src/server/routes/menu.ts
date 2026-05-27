@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import type { UiResponse } from '@devvit/web/shared';
 import { context } from '@devvit/web/server';
-import { createPost } from '../core/post';
+import { createModQueuePost, createPost } from '../core/post';
 
 export const menu = new Hono();
 
@@ -28,11 +28,11 @@ menu.post('/post-create', async (c) => {
 
 menu.post('/open-modqueue', async (c) => {
   try {
-    const post = await createPost();
+    const post = await createModQueuePost();
 
     return c.json<UiResponse>(
       {
-        navigateTo: `https://reddit.com/r/${context.subredditName}/comments/${post.id}?entrypoint=modqueue`,
+        navigateTo: `https://reddit.com/r/${context.subredditName}/comments/${post.id}`,
       },
       200
     );

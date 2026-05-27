@@ -50,6 +50,7 @@ const GEMINI_URL =
 const SYSTEM_PROMPT = `You are biddyMOD, a moderation assistant for Reddit moderators.
 Score the content from 0 to 100 for moderation risk.
 0 means harmless. 100 means urgent removal.
+Do not over-score casual insults like "you're stupid" unless they are repeated, targeted, threatening, hateful, or severe.
 Return only valid JSON with this shape:
 {"score": number, "summary": string, "topReason": string}`;
 
@@ -143,21 +144,29 @@ const scoreTextLocally = (text: string): ScoreResult => {
 
   const signals = [
     {
-      score: 85,
+      score: 90,
       reason: 'Threat or self-harm language',
-      summary: 'The content appears to include threatening or harmful language.',
+      summary: 'Threatening or harmful language.',
       patterns: [/\b(kill|die|hurt yourself|end yourself|kys)\b/],
     },
     {
-      score: 70,
-      reason: 'Targeted harassment',
-      summary: 'The content appears to include targeted harassment or abuse.',
-      patterns: [/\b(idiot|moron|stupid|worthless|loser|ugly|suck|losers?|shut up)\b/],
+      score: 62,
+      reason: 'Repeated personal attack',
+      summary: 'Repeated personal attack.',
+      patterns: [
+        /\b(you|u|ur|you're|youre)\b.{0,40}\b(ugly|worthless|loser|idiot|moron|stupid|suck)\b.{0,40}\b(ugly|worthless|loser|idiot|moron|stupid|suck)\b/,
+      ],
     },
     {
-      score: 55,
+      score: 42,
+      reason: 'Mild insult',
+      summary: 'Mild insult.',
+      patterns: [/\b(idiot|moron|stupid|ugly|suck|loser|shut up)\b/],
+    },
+    {
+      score: 48,
       reason: 'Profanity or hostile tone',
-      summary: 'The content appears hostile and may need moderator review.',
+      summary: 'Hostile tone.',
       patterns: [/\b(fuck|shit|bitch|asshole|dumb)\b/],
     },
   ];

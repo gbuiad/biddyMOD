@@ -6,6 +6,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 export const Splash = () => {
+  const isModerator = (context as { isModerator?: boolean }).isModerator;
+
   return (
     <div className="flex relative flex-col justify-center items-center min-h-screen gap-4 bg-white dark:bg-gray-900">
       <img
@@ -15,24 +17,33 @@ export const Splash = () => {
       />
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Hey {context.username ?? 'user'} 👋
+          biddyMOD
         </h1>
         <p className="text-base text-center text-gray-600 dark:text-gray-300">
-          Edit{' '}
-          <span className="bg-[#e5ebee] dark:bg-gray-700 px-1 py-0.5 rounded">
-            src/client/splash.tsx
-          </span>{' '}
-          to get started.
+          Moderator queue and AI review for r/{context.subredditName ?? 'your community'}.
         </p>
       </div>
-      <div className="flex items-center justify-center mt-5">
+
+      <div className="flex flex-col items-center gap-3 mt-5">
+        {/* Existing button */}
         <button
           className="flex items-center justify-center bg-[#d93900] dark:bg-orange-600 text-white w-auto h-10 rounded-full cursor-pointer transition-colors px-4 hover:bg-[#c23300] dark:hover:bg-orange-700"
           onClick={(e) => requestExpandedMode(e.nativeEvent, 'game')}
         >
           Tap to Start
         </button>
+
+        {/* Mod-only queue button — context.isModerator hides it from regular users */}
+        {isModerator && (
+          <button
+            className="flex items-center justify-center bg-gray-800 dark:bg-gray-700 text-white w-auto h-10 rounded-full cursor-pointer transition-colors px-4 hover:bg-gray-700 dark:hover:bg-gray-600 gap-2"
+            onClick={(e) => requestExpandedMode(e.nativeEvent, 'modqueue')}
+          >
+            🛡️ Mod Queue
+          </button>
+        )}
       </div>
+
       <footer className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3 text-[0.8em] text-gray-600 dark:text-gray-400">
         <button
           className="cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
