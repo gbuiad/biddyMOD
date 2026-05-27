@@ -45,7 +45,7 @@ export const scoreWithGemini = async (
 };
 
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const SYSTEM_PROMPT = `You are biddyMOD, a moderation assistant for Reddit moderators.
 Score the content from 0 to 100 for moderation risk.
@@ -90,7 +90,8 @@ const scoreWithGeminiApi = async (
   });
 
   if (!response.ok) {
-    console.error(`[biddyMOD] Gemini API failed: ${response.status} ${response.statusText}`);
+    await response.text();
+    console.error(`[biddyMOD] Gemini API unavailable (${response.status}). Using local fallback scoring.`);
     return null;
   }
 
@@ -151,7 +152,7 @@ const scoreTextLocally = (text: string): ScoreResult => {
       score: 70,
       reason: 'Targeted harassment',
       summary: 'The content appears to include targeted harassment or abuse.',
-      patterns: [/\b(idiot|moron|stupid|worthless|loser|shut up)\b/],
+      patterns: [/\b(idiot|moron|stupid|worthless|loser|ugly|suck|losers?|shut up)\b/],
     },
     {
       score: 55,

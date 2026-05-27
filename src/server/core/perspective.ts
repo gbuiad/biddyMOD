@@ -44,7 +44,8 @@ export const analyzeWithPerspective = async (
   });
 
   if (!response.ok) {
-    console.error(`[biddyMOD] Perspective API failed: ${response.status} ${response.statusText}`);
+    await response.text();
+    console.error(`[biddyMOD] Perspective API unavailable (${response.status}). Using local fallback scoring.`);
     return emptyPerspective('Perspective API request failed');
   }
 

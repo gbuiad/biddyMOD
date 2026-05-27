@@ -10,6 +10,9 @@
       },
       "game": {
         "entry": "game.html"
+      },
+      "modqueue": {
+      "entry": "modqueue.html"
       }
     }
   },
@@ -32,11 +35,34 @@
         "location": "subreddit",
         "forUserType": "moderator",
         "endpoint": "/internal/menu/example-form"
+      },
+      {
+      "label": "biddyMOD Queue",
+      "description": "View flagged content",
+      "location": "subreddit",
+      "forUserType": "moderator",
+      "endpoint": "/internal/menu/open-modqueue"
       }
     ]
   },
   "forms": {
     "exampleForm": "/internal/form/example-submit"
+  },
+  "settings": {
+    "global": {
+      "perspective-api-key": {
+        "type": "string",
+        "label": "Perspective API key",
+        "helpText": "Google Perspective API key used to analyze toxicity.",
+        "isSecret": true
+      },
+      "gemini-api-key": {
+        "type": "string",
+        "label": "Gemini API key",
+        "helpText": "Google Gemini API key used to summarize moderation decisions.",
+        "isSecret": true
+      }
+    }
   },
   "triggers": {
     "onAppInstall": "/internal/triggers/on-app-install",

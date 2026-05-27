@@ -5,3 +5,10 @@ export const createPost = async () => {
     title: 'biddymod',
   });
 };
+
+export const createModQueuePost = async () => {
+  return await reddit.submitCustomPost({
+    title: 'biddyMOD — Mod Queue',
+    entry: 'modqueue',
+  });
+};

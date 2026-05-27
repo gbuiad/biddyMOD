@@ -25,3 +25,24 @@ menu.post('/post-create', async (c) => {
     );
   }
 });
+
+menu.post('/open-modqueue', async (c) => {
+  try {
+    const post = await createPost();
+
+    return c.json<UiResponse>(
+      {
+        navigateTo: `https://reddit.com/r/${context.subredditName}/comments/${post.id}?entrypoint=modqueue`,
+      },
+      200
+    );
+  } catch (error) {
+    console.error(`Error opening modqueue: ${error}`);
+    return c.json<UiResponse>(
+      {
+        showToast: 'Failed to open biddyMOD queue',
+      },
+      400
+    );
+  }
+});
